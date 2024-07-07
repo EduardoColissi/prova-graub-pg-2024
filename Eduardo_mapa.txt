@@ -1,0 +1,30 @@
+﻿# UNISINOS
+# Curso: Ciência da Computação - Híbrido
+# Atividade Acadêmica - Processamento Gráfico
+# Módulo 7
+# Tarefa: Prova Grau B - Implementação de um jogo simples com Tilemap Isométrico
+# Data: 03/07/2024
+# Professor: Fernando Marson & Rossana Baptista Queiroz
+# Alunos: Paulo Griebler Júnior & Rodrigo Ferreira Pires & Eduardo Colissi Wiceskoski
+# Registros Acadêmicos: 1930669 & 1917485 & 1927367
+#
+# mapa.txt --> arquivo com a localização dos tiles no mapa
+# Linhas que iniciam com o caractere "#" são comentários e não serão consideradas
+# Necessita um mapa de pelo menos 15x15 Tiles
+tilemap_geral.png 8 50x50
+7 7 7 7 7 8 7 7 7 7 7 7 7 7 7
+7 7 2 7 8 8 7 7 7 7 7 7 4 5 6
+7 3 1 7 8 7 7 7 7 7 4 5 6 6 6
+7 7 7 8 8 7 7 7 7 6 6 6 6 6 6
+7 7 7 8 7 7 7 7 7 7 7 7 7 6 6
+3 3 7 8 8 3 3 3 3 3 7 7 7 7 6
+2 7 7 7 8 8 8 8 3 3 7 7 7 7 6
+3 3 7 7 7 7 7 8 3 7 7 7 7 7 7
+3 3 1 2 7 7 7 8 7 7 7 7 7 7 7
+7 7 3 3 3 3 7 8 7 7 7 7 7 7 7
+7 7 7 7 7 7 7 8 7 7 7 7 7 7 7
+7 7 7 7 8 8 8 8 7 7 7 7 7 7 7
+7 7 7 7 8 7 7 8 7 7 7 7 7 7 7
+7 8 8 8 8 7 7 8 7 4 4 6 6 6 6
+7 8 7 7 7 7 7 8 5 5 5 5 5 5 6
+# Fim do mapa 15x15

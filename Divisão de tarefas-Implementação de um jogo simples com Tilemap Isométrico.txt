@@ -1,0 +1,40 @@
+// UNISINOS
+// Curso: Ciência da Computação - Híbrido
+// Atividade Acadêmica - Processamento Gráfico
+// Módulo 7
+// Tarefa: Prova Grau B - Implementação de um jogo simples com Tilemap Isométrico
+// Data: 03/07/2024
+// Professor: Fernando Marson & Rossana Baptista Queiroz
+// Alunos: Paulo Griebler Júnior & Rodrigo Ferreira Pires & Eduardo Colissi Wiceskoski
+// Registros Acadêmicos: 1930669 & 1917485 & 1927367
+
+
+Lista de tarefas para a realização da Implementação de um jogo simples com Tilemap Isométrico:
+
+- Conseguir conjunto de tiles (todos quadrados, com motivos variados "água", "grama", "lava", "pedra/muro", "poço", etc...
+- Conseguir personagem em sprite com diferentes frames de movimento: "caminhada para dir/esq.", "parado", "morto", "pegando-fogo (caso caia na lava)..."
+- Definir o esquema do mapa (posição dos tiles no mapa)
+- Construir classe que organiza as info de um tile:
+    - tipo 
+    - posição X, Y no mapa de tiles
+    - ação quando o personagem pisa nele
+    
+- Construir classe para o Personagem:
+    - ações para fazer o personagem ir para:
+        - dir.(L) -> troca de frames conforme caminha e deslocamento no mapa
+        - mesma coisa para esq.(O), cima(N), baixo(S), NO, NL, SO, SL
+        
+- Construir classe Mapa - organiza as info do mapa:
+    - ler a configuração do mapa de um arquivo
+    - desenhar o mapa na tela
+    - atualizar o desenho do mapa na tela
+    - avaliar o novo movimento do personagem (suas consequências)
+    - desenhar na tela essas consequências (morreu, pegou moeda, bateu no muro, etc)
+    
+- Criar página no GitHub para postar o trabalho:
+    •Códigos-fonte (projeto)
+    •Arquivo LEIAME.md com informações pertinentes de como compilar e executar a aplicação
+
+- Gravação da apresentação (colocar link para vídeo)
+    
+        
