@@ -14,16 +14,22 @@
     - ação quando o personagem pisa nele
 */
 
+#ifndef TILE_H
+#define TILE_H
+
 #include <iostream>
 #include <string>
 #include <vector>
 
-#include "Config.h"
+#include "Log.h"
+//#include "Config.h" // Não é mais necessário !
 
 using namespace std;
 
 class Tile {
     private:
+        Log* log;
+
         string nome; // Nome da textura -- formato "nome_da_textura.png"
         float offsetX; // Deslocamento no eixo X dentro de "tiles_todos.png" para achar a textura do Tile
         float offsetY; // Deslocamento no eixo Y dentro de "tiles_todos.png" para achar a textura do Tile
@@ -32,6 +38,8 @@ class Tile {
         // caminháveis: terra, areia, grama, pedra, cristal
         // não-caminháveis: mato, água
         // fatais: lava, poço
+
+        void init();
 
     public:
         Tile();
@@ -48,6 +56,8 @@ class Tile {
         bool isFatal();
         string toString();
 };
+
+#endif
 
 
 /*- Conseguir conjunto de tiles (todos quadrados, com motivos variados "água", "grama", "lava", "pedra/muro", "poço", etc...

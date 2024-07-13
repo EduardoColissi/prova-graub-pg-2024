@@ -11,6 +11,9 @@
 #include "Tile.h"
 
 Tile::Tile() {
+    init();
+    log->funcaoN("");
+
     this->nome = "";
     this->offsetX = 0.0;
     this->offsetY = 0.0;
@@ -19,6 +22,9 @@ Tile::Tile() {
 };
 
 Tile::Tile(string nome, float offsetX, float offsetY, bool caminhavel, bool fatal) {
+    init();
+    log->funcaoN("");
+
     //  bool "<< caminhavel <<", bool "<< fatal <<"
     this->nome = nome;
     this->offsetX = offsetX;
@@ -26,6 +32,12 @@ Tile::Tile(string nome, float offsetX, float offsetY, bool caminhavel, bool fata
     this->caminhavel = caminhavel;
     this->fatal = fatal;
 };
+
+void Tile::init() {
+     log = Log::getInstance();
+     log->funcaoN("");
+
+}
 
 Tile::~Tile() {
 

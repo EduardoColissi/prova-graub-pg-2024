@@ -1,18 +1,19 @@
 // UNISINOS
 // Curso: Ciência da Computação - Híbrido
 // Atividade Acadêmica - Processamento Gráfico
-// Módulo 5
-// Tarefa: Controle e Animação de Sprites
-// Data: 02/07/2024
+// Módulo 7
+// Tarefa: Teste de Losango
+// Data: 12/07/2024
 // Professora: Rossana Baptista Queiroz
 // Aluno: Paulo Griebler Júnior
 // Registro Acadêmico: 1930669
 
-//Compilar com: g++ prova_grau_B.cpp -o prova_grau_B Config.cpp Tile.cpp Quad.cpp Map.cpp src/glad.c -I include -L/usr/lib/x86_64-linux-gnu/ -L/usr/lib64 -lGLEW -lGL -lX11 -lglfw -lrt -lm -ldl
-// Rodar com: ./prova_grau_B
+// Objetivo: Desenvolver o menor código possível que permita detectar cliques de mouse dentro do losango 100x60
 
-// Texturas grátis:
-// https://craftpix.net/freebies/
+//Compilar com: g++ prova.cpp -o prova Log.cpp Tile.cpp Losango.cpp Map.cpp Persona.cpp src/glad.c -I include -L/usr/lib/x86_64-linux-gnu/ -L/usr/lib64 -lGLEW -lGL -lX11 -lglfw -lrt -lm -ldl
+// Rodar com: ./prova
+
+//#include "Persona.h" // Colocado aqui para evitar o erro #error OpenGL header already included, remove this include, glad already provides it
 
 
 #include <glad/glad.h> // É necessário que a inclusão do glad.h seja feita antes da inclusão do glfw3 -- aliás o glad.h precisa ser incluído ANTES de qualquer outro arquivo cabeçalho que use os arquivos cabeçalhos do OpenGL (tipo GL/gl.h)
@@ -21,12 +22,12 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/string_cast.hpp> // Para imprimir um vetor de glm... bem útil...
 
 #include <iostream>
-#include <cmath> // para sin()
-//#include <filesystem>
-
 #include "Shader.h"
+
+#include "Persona.h"
 
 #include "Map.h" // Necessário que este include esteja antes de #include "stb_image.h" abaixo
 
@@ -76,79 +77,6 @@ void processInput(GLFWwindow* window) {
     // Pressionou a tecla ESC
     if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) glfwSetWindowShouldClose(window, true);
 
-    /*// Muda a sprite do personagem:
-    if(glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS) { // Deve REDUZIR o valor da sprite do personagem
-        if(sprite_val <= SPRITE_VAL_MIN) { // Verifica se já não está no valor mínimo
-            cout << "###AVISO: 'sprite_val' já está no valor mínimo que é: " << SPRITE_VAL_MIN << endl;
-        }
-        else {
-            sprite_val--;
-            cout << "'sprite_val' =" << sprite_val << endl;
-        }
-    }
-    if(glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS) { // Deve AUMENTAR o valor da sprite do personagem
-        if(sprite_val >= SPRITE_VAL_MAX) { // Verifica se já não está no valor máximo
-            cout << "###AVISO: 'sprite_val' já está no valor máximo que é: " << SPRITE_VAL_MAX << endl;
-        }
-        else {
-            sprite_val++;
-            cout << "'sprite_val' =" << sprite_val << endl;
-        }
-
-    }
-
-    // Muda o offsetx do personagem:
-    if(glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) { // Deve REDUZIR o valor do offsetx do personagem -- Deve movimentar o personagem para ESQ.
-        if(pos_x_val <= POS_X_VAL_MIN) {
-            cout << "###AVISO: 'pos_x_val' já está no valor mínimo que é: " << POS_X_VAL_MIN << endl;
-        }
-        else {
-            if(offsetx_val <= OFFSETX_VAL_MIN) { // Verifica se já não está no valor mínimo
-                cout << "###AVISO: 'offsetx_val' já está no valor mínimo que é: " << OFFSETX_VAL_MIN << endl;
-                offsetx_val = OFFSETX_VAL_MAX;
-            }
-            else {
-                //offsetx_val--;
-                offsetx_val = offsetx_val - 0.25;
-
-            }
-            pos_x_val -= 0.05;
-            cout << "'offsetx_val' =" << offsetx_val << endl;
-            cout << "'pos_x_val' =" << pos_x_val << endl;
-        }
-    }
-    if(glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) { // Deve AUMENTAR o valor do offsetx do personagem
-        if(offsetx_val >= OFFSETX_VAL_MAX) { // Verifica se já não está no valor máximo
-            cout << "###AVISO: 'offsetx_val' já está no valor máximo que é: " << OFFSETX_VAL_MAX << endl;
-        }
-        else {
-            //offsetx_val++;
-            offsetx_val = offsetx_val + 0.25;
-            cout << "'offsetx_val' =" << offsetx_val << endl;
-        }
-    }
-
-    // Muda o offsety do personagem:
-    if(glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) { // Deve REDUZIR o valor do offsety do personagem
-        if(offsety_val <= OFFSETY_VAL_MIN) { // Verifica se já não está no valor mínimo
-            cout << "###AVISO: 'offsety_val' já está no valor mínimo que é: " << OFFSETY_VAL_MIN << endl;
-        }
-        else {
-            //offsety_val--;
-            offsety_val = offsety_val - 0.25;
-            cout << "'offsety_val' =" << offsety_val << endl;
-        }
-    }
-    if(glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) { // Deve AUMENTAR o valor do offsety do personagem
-        if(offsety_val >= OFFSETY_VAL_MAX) { // Verifica se já não está no valor máximo
-            cout << "###AVISO: 'offsety_val' já está no valor máximo que é: " << OFFSETY_VAL_MAX << endl;
-        }
-        else {
-            //offsety_val++;
-            offsety_val = offsety_val + 0.25;
-            cout << "'offsety_val' =" << offsety_val << endl;
-        }
-    }*/
 
     if(glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS) { // Deve REDUZIR o scale da scale do personagem
         if(scale_val <= SCALE_VAL_MIN) { // Verifica se já não está no valor mínimo
@@ -206,50 +134,9 @@ void processInput(GLFWwindow* window) {
             cout << "'offsety_val' =" << offsety_val << endl;
         }
     }
-    // Muda a posição do personagem:
-    if(glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) { // Deve REDUZIR o valor do pos_x_val -- Deve movimentar o personagem para ESQ.
-        if(pos_x_val <= POS_X_VAL_MIN) {
-            cout << "###AVISO: 'pos_x_val' já está no valor mínimo que é: " << POS_X_VAL_MIN << endl;
-        }
-        else {
-            pos_x_val -= 0.05;
-            cout << "'pos_x_val' =" << pos_x_val << endl;
-        }
-    }
-    if(glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) { // Deve AUMENTAR o valor do pos_x_val
-        if(pos_x_val >= POS_X_VAL_MAX) {
-            cout << "###AVISO: 'pos_x_val' já está no valor mínimo que é: " << POS_X_VAL_MAX << endl;
-        }
-        else {
-            pos_x_val += 0.05;
-            cout << "'pos_x_val' =" << pos_x_val << endl;
-        }
-    }
-
-    // Muda o offsety do personagem:
-    if(glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) { // Deve REDUZIR o valor do pos_y_val
-        if(pos_y_val <= POS_Y_VAL_MIN) {
-            cout << "###AVISO: 'pos_y_val' já está no valor mínimo que é: " << POS_Y_VAL_MIN << endl;
-        }
-        else {
-            pos_y_val -= 0.05;
-            cout << "'pos_y_val' =" << pos_y_val << endl;
-        }
-
-    }
-    if(glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) { // Deve AUMENTAR o valor do pos_y_val
-        if(pos_y_val >= POS_Y_VAL_MAX) {
-            cout << "###AVISO: 'pos_y_val' já está no valor mínimo que é: " << POS_Y_VAL_MAX << endl;
-        }
-        else {
-            pos_y_val += 0.05;
-            cout << "'pos_y_val' =" << pos_y_val << endl;
-        }
-
-    }
-
 
 }
+
 
 void mensagem_de_inicio() {
     cout << "Para mudar a sprite do personagem tecle '1' ou '2'." << endl;
@@ -268,7 +155,7 @@ int main() {
     glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
     cout << "Maximum nr of vertex attributes supported: " << nrAttributes << endl;*/ // Dá falha de segmentação...
 
-    GLFWwindow* window = glfwCreateWindow(800, 600, "M5-Controle e Animação de Sprites", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(800, 600, "M7 - Teste de Coordenadas Ortográficas", NULL, NULL);
     if (window == NULL) {
         cout << "###Erro: Falha na criação da janela GLFW !" << endl;
         glfwTerminate();
@@ -289,40 +176,56 @@ int main() {
 
 
     //Shader(const char* vertexPath, const char* fragmentPath, const char* geometryPath = nullptr)
-    //Shader meuShader0("./vertex_shader.glsl", "./fragment_shader.glsl"); // Shader para o fundo
-    Shader meuShader0("./sprites_vs.glsl", "./sprites_fs.glsl"); // Shader para o Tile
-    Shader meuShader1("./sprites_vs.glsl", "./sprites_fs.glsl"); // Shader para o personagem
+    Shader shaderLos("./los_vs.glsl", "./los_fs.glsl"); // Shader para a Los
 
-    // VERTICES E VAO PARA O FUNDO:
-    //cada tile tem altura 60 e largura 100
-    /*float vertices_FUN[] = {
-         // positions          // texture coords (variam de 0.0 à 1.0 -- não podem ser negativas !)
-        // Seguindo orientação anti-horário para facilitar a adição do eixo Z futuramente
-        // Mudança na orientação dos eixo T para evitar de carregar as texturas de cabeça para baixo
-        // X     Y     Z      S(X)  T(Y)
-         1.0f,  1.0f, 0.0f,   1.0f, 0.0f, // sup./dir.
-         1.0f, -1.0f, 0.0f,   1.0f, 1.0f, // inf./dir.
-        -1.0f, -1.0f, 0.0f,   0.0f, 1.0f // inf./esq.
-        //-1.0f,  1.0f, 0.0f,   0.0f, 0.0f  // sup./esq.
+    /*float widthProj = 800.0;
+    float heightProj = 600.0;
+    float widthObj = 100.0; //400.0; //100.0;
+    float heightObj = 60.0;
+
+    //static pair<Triangulo, Triangulo>obterPontosDoLosangoParaCalculoDeVertices(float widthProj, float heightProj, float widthObj, float heightObj);
+    pair<Triangulo, Triangulo> par = Losango::obterPontosDoLosangoParaCalculoDeVertices(widthProj, heightProj, widthObj, heightObj);
+
+    Vertice A = par.first.a;
+    float Ax = A.x;
+    float Ay = A.y;
+    Vertice B = par.first.b;
+    float Bx = B.x;
+    float By = B.y;
+    Vertice C = par.first.c;
+    float Cx = C.x;
+    float Cy = C.y;
+    Vertice D = par.second.a;
+    float Dx = D.x;
+    float Dy = D.y;
+    Vertice E = par.second.b;
+    float Ex = E.x;
+    float Ey = E.y;
+    Vertice F = par.second.c;
+    float Fx = F.x;
+    float Fy = F.y;
+
+    float vertices_LOS[] = {
+        //X  Y    Z      R    G    B  S(X) T(Y)
+        // T0
+        Ax, Ay,  0.0,   1.0, 1.0, 0.0, 0.0, heightObj/2,        // A
+        Bx, By,  0.0,   1.0, 1.0, 0.0, widthObj/2, 0.0,         // B
+        Cx, Cy,  0.0,   1.0, 1.0, 0.0, widthObj/2, heightObj,   // C
+        // T1
+        Dx, Dy,  0.0,   1.0, 1.0, 0.0, 1.0, heightObj/2,        // D
+        Ex, Ey,  0.0,   1.0, 1.0, 0.0, widthObj/2, 0.0,         // E
+        Fx, Fy,  0.0,   1.0, 1.0, 0.0, widthObj/2, heightObj    // F
     };
 
-    //unsigned int indices_FUN[] = {
-    //    0, 1, 3, // first triangle
-    //    1, 2, 3  // second triangle
-    //};
-    //unsigned int VBO_FUN, VAO_FUN, EBO_FUN;
-    unsigned int VBO_FUN, VAO_FUN;
-    glGenVertexArrays(1, &VAO_FUN);
-    glGenBuffers(1, &VBO_FUN);
-    //glGenBuffers(1, &EBO_FUN);
 
-    glBindVertexArray(VAO_FUN);
+    unsigned int VBO_LOS, VAO_LOS;
+    glGenVertexArrays(1, &VAO_LOS);
+    glGenBuffers(1, &VBO_LOS);
 
-    glBindBuffer(GL_ARRAY_BUFFER, VBO_FUN);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices_FUN), vertices_FUN, GL_STATIC_DRAW);
+    glBindVertexArray(VAO_LOS);
 
-    //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO_FUN);
-    //glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices_FUN), indices_FUN, GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO_LOS);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices_LOS), vertices_LOS, GL_STATIC_DRAW);
 
     // position attribute
     //void glVertexAttribPointer(GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const void * pointer);
@@ -331,14 +234,14 @@ int main() {
     // stride = deslocamento entre este byte de informação (vértice ou textura) em relação ao próximo byte de informação de (vertice ou textura)
     // pointer = deslocamento entre as colunas de bytes de informação (vertice = 0/textura = 3*sizeof(float)) // Sempre: X*sizeof(tipo_em_uso)
     // Um float em C++ ocupa 4 bytes = 32 bits // Double ocupa 8 bytes (64 bits) ?
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
     // color attribute
-    //glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-    //glEnableVertexAttribArray(1); // Não tem cor aqui, só textura !
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
     // texture coord attribute
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);*/
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+    glEnableVertexAttribArray(2);*/
 
 
     // set up vertex data (and buffer(s)) and configure vertex attributes
@@ -406,36 +309,7 @@ int main() {
 	glEnableVertexAttribArray(1);
 
 
-    /*float WIDTH = 1.0;
-    float HEIGHT = 1.0;
-
-    GLfloat vertices[] = {
-        // Positions                             // Colors
-        WIDTH * 0.25f, HEIGHT * 0.75f, +0.0f,    0.0f, 0.0f, 1.0f,
-        WIDTH * 0.50f, HEIGHT * 0.25f, +0.0f,    1.0f, 0.0f, 0.0f,
-        WIDTH * 0.75f, HEIGHT * 0.75f, +0.0f,    0.0f, 1.0f, 0.0f,
-    };
-
-    glm::mat4 proj = glm::ortho(0.0f, (float)WIDTH, (float)HEIGHT, 0.0f, -1.0f, 1.0f);
-
-
-    GLuint VAO_FUN, VBO;
-    glGenVertexArrays( 1, &VAO_FUN );
-    glGenBuffers( 1, &VBO );
-    glBindVertexArray( VAO_FUN );
-    glBindBuffer( GL_ARRAY_BUFFER, VBO);
-    glBufferData( GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW );
-    glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof( GLfloat ), ( GLvoid * ) 0 );
-    glEnableVertexAttribArray( 0 );
-    glVertexAttribPointer( 1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof( GLfloat ), (GLvoid *)(3*sizeof(float)) );
-    glEnableVertexAttribArray( 1 );
-
-    glBindVertexArray( 0 );*/ // Não deu certo !!!
-
-
-
     // VERTICES E VAO PARA O PERSONAGEM
-
     float vertices_PER[] = {
          // positions          // texture coords (variam de 0.0 à 1.0 -- não podem ser negativas !)
         // Seguindo orientação anti-horário para facilitar a adição do eixo Z futuramente
@@ -479,8 +353,6 @@ int main() {
     // texture coord attribute
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
-
-
 
 
     // load and create a texture
@@ -528,16 +400,9 @@ int main() {
         stbi_image_free(data);
     }
 
-    //glm::mat4 projection = glm::ortho(0.0, 800.0, 0.0, 600.0, -1.0, 1.0); // Parece sem efeito aqui
 
     // Mostra a mensagem de início -- teclas, funcionamento...
     mensagem_de_inicio();
-
-    //double glfwGetTime(void) This function returns the value of the GLFW timer. Unless the timer has been set using glfwSetTime, the timer measures time elapsed since GLFW was initialized.
-    //Returns  The current value, in seconds, or zero if an error occurred.
-    //Remarks  This function may be called from secondary threads.
-    //Note  The resolution of the timer is system dependent, but is usually on the order of a few micro- or nanoseconds. It uses the highest-resolution monotonic time source on each supported platform.
-
 
     Map map = Map();
     vector<Tile> vecTiles = map.getVecTiles();
@@ -551,6 +416,16 @@ int main() {
     map.carregarMapa("Eduardo_mapa.txt");
 
 
+    /*//Tile(string nome, float offsetX, float offsetY, bool caminhavel, bool fatal);
+    //vecTiles.push_back(Tile("pedra",        0.33, 0.66, true, false)); // 8
+    Tile tile = vecTiles.at(8);
+    //Losango(float x, float y, float w, float h, float tX, float tY, Tile tile, bool ativo);
+    Losango losango = Losango(1, 1, 100, 60, 100, 100, tile, true);
+    cout << "losango.toString() =" << losango.toString() << endl; // Debug*/
+
+    Persona persona = Persona(window, 0, 0, 1, 1, 100, 100, 0.0, 0.0, true);
+    cout << "persona.toString() =" << persona.toString() << endl; // Debug
+
     tempo_anterior = glfwGetTime();
     cout << "tempo_anterior =" << tempo_anterior << endl;
 
@@ -558,9 +433,14 @@ int main() {
     glEnable(GL_BLEND); // Permitem que a camada transparente do canal alfa de um PNG possa realmente ser 'transparente' ao encontrar se sobrepor à outras camadas de outras sprites que não são transparentes
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+
+    glActiveTexture(GL_TEXTURE0); //Especificando que o shader usará apenas 1 buffer de tex
+    //shader.setInt("texBuffer", 0); //Enviando para o shader o ID e nome da var que será o sampler2D
+
+
     // Loop de renderização
     while(!glfwWindowShouldClose(window)) { // Loop que mantém o desenho da janela principal --> Se glfwWindowShouldClose(window) retorna 'true' o loop pára e o programa encerra
-        glm::mat4 projection = glm::ortho(0.0, 800.0, 0.0, 600.0, -1.0, 1.0);
+
 
         // Entradas:
         tempo_atual = glfwGetTime();
@@ -570,9 +450,20 @@ int main() {
         //tempo_atual =0.327641
         //cout << "tempo_atual - tempo_anterior =" << (tempo_atual - tempo_anterior) << endl;
         if ((tempo_atual - tempo_anterior) > 0.1) { // Avalia o tempo decorrido para autorizar o processo de inputs (e mudar as sprites do personagem)
-            processInput(window); // Processa os eventos ocorridos
+            //processInput(window); // Processa os eventos ocorridos
             tempo_anterior = tempo_atual;
         }
+
+        /*const int state = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT);
+        if (state == GLFW_PRESS) {
+            double mx, my;
+            glfwGetCursorPos(window, &mx, &my);
+            cout << "Posição do mouse: mx=" << mx << "| my=" << my << endl;
+            //static void seEstaDentroDoLosangoradoDesativa_o(Losango& losango[10][10], int mx, int my)
+            //Losango::seEstaDentroDoLosangoradoDesativa_o(losango, mx, my);
+            bool colidiu = Losango::estaDentroDoLosango(losango, mx, my);
+            cout << "colidiu =" << colidiu << endl;
+        }*/ // Teste de colisão com mouse
 
 
 
@@ -582,71 +473,90 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Usa GL_DEPTH_BUFFER_BIT para apagar o buffer das texturas
 
 
-        // Desenha o array de Tiles:
+        // Desenha o losango:
+        shaderLos.use(); // O 'uso' do shader deve ser 'invocado' antes de iniciar as transformações -- senão o 'transform' não chegará no shader e será computado como '0' o que faz com que o personagem não apareça ! -- Shader antes de glBindVertexArray...
         glBindVertexArray(VAO);
-        glBindTexture(GL_TEXTURE_2D, texture[0]); // Ativa a textura do fundo
-        for (int i = 0; i < map.getVecQuads().size(); i++) { // Itera pela linha
-            for (int j = 0; j < map.getVecQuads().at(i).size(); j++) { // Itera pela coluna
-                //cout << "i =" << i << "| j =" << j << endl;
-                Quad quad = map.getVecQuads().at(i).at(j);
-                if (quad.isAtivo()) { // Só desenha o Quad se ele está ativo (on)
 
-                    glm::mat4 transform0 = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
-                    transform0 = glm::scale(transform0, glm::vec3(quad.getTX(), quad.getTY(), 0.0)); //
-                    //transform0 = glm::translate(transform0, glm::vec3(quad.getX()*0.15, quad.getY()*0.15, 0.0f));
-                    //transform0 = glm::translate(transform0, glm::vec3(quad.getX()*0.125, quad.getY()*0.125, 0.0f));
-                    transform0 = glm::translate(transform0, glm::vec3(quad.getX()*0.1115, quad.getY()*0.1115, 0.0f));
-                    unsigned int transformLoc0 = glGetUniformLocation(meuShader0.ID, "transform");
-                    glUniformMatrix4fv(transformLoc0, 1, GL_FALSE, glm::value_ptr(transform0));
-                    unsigned int offsetx0 = glGetUniformLocation(meuShader0.ID, "offsetx");
+        glm::mat4 projection = glm::ortho(0.0, 800.0, 0.0, 600.0, -1.0, 1.0); // Isto vai ser enviado para o shader para que o mesmo trabalhe com coordenados ortográficas -- USAR SEMPRE ESTE TIPO DE COORDENADA PQ AS CLASSES FORAM CONSTRUÍDAS CONSIDERANDO QUE O EIXO Y CRESCE PARA CIMA !
+        //glm::mat4 proj = glm::ortho(0.0f, (float)WIDTH, (float)HEIGHT, 0.0f, -1.0f, 1.0f); // Retirado do exemplo_04.cpp linha 155
+        //glm::mat4 projection = glm::ortho(0.0, 800.0, 600.0, 0.0, -1.0, 1.0); // Aqui se usaria (NÃO USE !) se quisesse que o eixo Y crescesse para baixo
+
+        //cout << "glm::to_string(projection) =" << glm::to_string(projection) << endl;
+
+        /*for (int i = 0; i < map.getVecLosangos().size(); i++) { // Itera pela linha
+            for (int j = 0; j < map.getVecLosangos().at(i).size(); j++) { // Itera pela coluna
+                i = 0; // Debug
+                j = 0; // Debug
+                cout << "i =" << i << "| j =" << j << endl;
+                Losango losango = map.getVecLosangos().at(i).at(j);
+                cout << "losango.toString() =" << losango.toString() << endl; // Debug
+
+                if (losango.isAtivo()) { // Só desenha o Quad se ele está ativo (on)
+                    unsigned int projectionLoc = glGetUniformLocation(shaderLos.ID, "projection");
+                    glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
+
+                    glm::mat4 transform1 = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
+
+                    transform1 = glm::scale(transform1, glm::vec3(1.0, 1.0, 0.0));
+                    //transform1 = glm::scale(transform1, glm::vec3(losango.getSX(), losango.getSY(), 0.0)); // CUIDADO ao usar scale com a projeção pq sem scale o objeto vai ficar do tamanho de um ponto e se usar uma escala menor que 1 vai ficar menor ainda... Confirmado.. 0.3 em scale fez o objeto desaparecer !!!
+                    transform1 = glm::translate(transform1, glm::vec3(0.0, 0.0, 0.0));
+                    //transform1 = glm::translate(transform1, glm::vec3(losango.getX(), losango.getY(), 0.0)); // Tem que ter um 'translate' no uso da 'projection' senão o objeto fica na região esq./inf. da tela (quase imperceptível)
+
+
+                    unsigned int transformLoc1 = glGetUniformLocation(shaderLos.ID, "transform");
+                    glUniformMatrix4fv(transformLoc1, 1, GL_FALSE, glm::value_ptr(transform1));
+
+                    glUniform1i(glGetUniformLocation(shaderLos.ID, "sprite"), texture[0]); //
+                    unsigned int offsetx = glGetUniformLocation(shaderLos.ID, "offsetx");
                     //void glUniform1f( 	GLint location,	GLfloat v0);
                     //glUniform1f(transformAlfa0, 1.0);
-                    glUniform1f(offsetx0, quad.getTile().getOffsetX());
-                    unsigned int offsety0 = glGetUniformLocation(meuShader0.ID, "offsety");
-                    glUniform1f(offsety0, quad.getTile().getOffsetY());
+                    glUniform1f(offsetx, losango.getTile().getOffsetX());
+                    unsigned int offsety = glGetUniformLocation(shaderLos.ID, "offsety");
+                    glUniform1f(offsety, losango.getTile().getOffsetY());
+
+                    glm::mat4 multiply = glm::matrixCompMult(projection, transform1);
+                    cout << "glm::to_string(glm::matrixCompMult(projection, transform1)) =" << glm::to_string(multiply) << endl;
+
+                    //glDrawElements(GL_LINES, 2, GL_UNSIGNED_INT, 0); // Como não usou EBO não pode chamar essa função -- MUITO CUIDADO AQUI !! // Thread 1 "coordenadas_ort" received signal SIGSEGV, Segmentation fault. __memcpy_avx_unaligned_erms ()
+                    //https://www.khronos.org/opengl/wiki/Primitive
+                    //There are 3 kinds of line primitives, based on different interpretations of a vertex stream.
+                    //GL_LINES: Vertices 0 and 1 are considered a line. Vertices 2 and 3 are considered a line. And so on. If the user specifies a non-even number of vertices, then the extra vertex is ignored.
+                    //GL_LINE_STRIP: The adjacent vertices are considered lines. Thus, if you pass n vertices, you will get n-1 lines. If the user only specifies 1 vertex, the drawing command is ignored.
+                    //GL_LINE_LOOP: As line strips, except that the first and last vertices are also used as a line. Thus, you get n lines for n input vertices. If the user only specifies 1 vertex, the drawing command is ignored. The line between the first and last vertices happens after all of the previous lines in the sequence.
+                    //glDrawArrays(GL_LINES, 0, 4);
+                    //glDrawArrays(GL_LINE_LOOP, 0, 6);
+                    //glDrawArrays(GL_TRIANGLES, 0, 6); // OK -- Funciona !
                     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
                 }
             }
-        }
+        }*/
 
-        /*// Desenha os Tiles:
-        //glBindVertexArray(VAO_FUN);
-        glBindVertexArray(VAO);
-        glBindTexture(GL_TEXTURE_2D, texture[0]); // Ativa a textura do fundo
-        glm::mat4 transform0 = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
-        transform0 = glm::scale(transform0, glm::vec3(scale_val, scale_val, 0.0)); //
-        transform0 = glm::translate(transform0, glm::vec3(pos_x_val, pos_y_val, 0.0f));
-        unsigned int transformLoc0 = glGetUniformLocation(meuShader0.ID, "transform");
-        glUniformMatrix4fv(transformLoc0, 1, GL_FALSE, glm::value_ptr(transform0));
-        unsigned int offsetx0 = glGetUniformLocation(meuShader0.ID, "offsetx");
-        //void glUniform1f( 	GLint location,	GLfloat v0);
-        //glUniform1f(transformAlfa0, 1.0);
-        glUniform1f(offsetx0, offsetx_val);
-        unsigned int offsety0 = glGetUniformLocation(meuShader0.ID, "offsety");
-        glUniform1f(offsety0, offsety_val);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);*/
-
-
-
-        // Desenha o personagem:
+        // DESENHA O PERSONAGEM:
         glBindVertexArray(VAO_PER);
-        glBindTexture(GL_TEXTURE_2D, texture[1]); // Ativa a textura do fundo
-        meuShader1.use(); // O 'uso' do shader deve ser 'invocado' antes de iniciar as transformações -- senão o 'transform' não chegará no shader e será computado como '0' o que faz com que o personagem não apareça !
+        glBindTexture(GL_TEXTURE_2D, texture[1]);
+        unsigned int projectionLoc = glGetUniformLocation(shaderLos.ID, "projection");
+        glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
         glm::mat4 transform1 = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
-        transform1 = glm::scale(transform1, glm::vec3(0.3, 0.3, 0.0)); //
-        transform1 = glm::translate(transform1, glm::vec3(pos_x_val, pos_y_val, 0.0f));
-        unsigned int transformLoc1 = glGetUniformLocation(meuShader1.ID, "transform");
+
+        //transform1 = glm::scale(transform1, glm::vec3(persona.getSX(), persona.getSY(), 1.0));
+        Losango losango = map.getVecLosangos().at(persona.getX()).at(persona.getY());
+        //transform1 = glm::translate(transform1, glm::vec3(losango.getSX(), losango.getSY(), 1.0));
+        transform1 = glm::translate(transform1, glm::vec3(400.0f, 300.0f, 0.0f));
+
+        transform1 = glm::scale(transform1, glm::vec3(10.0f, 10.0f, 1.0f));
+
+
+        unsigned int transformLoc1 = glGetUniformLocation(shaderLos.ID, "transform");
         glUniformMatrix4fv(transformLoc1, 1, GL_FALSE, glm::value_ptr(transform1));
 
-        //glUniform1i(glGetUniformLocation(meuShader1.ID, "sprite"), sprite_val); //
-        unsigned int offsetx = glGetUniformLocation(meuShader1.ID, "offsetx");
-        //void glUniform1f( 	GLint location,	GLfloat v0);
-        //glUniform1f(transformAlfa0, 1.0);
-        glUniform1f(offsetx, offsetx_val);
-        unsigned int offsety = glGetUniformLocation(meuShader1.ID, "offsety");
-        glUniform1f(offsety, offsety_val);
+        glUniform1i(glGetUniformLocation(shaderLos.ID, "sprite"), 0); //
+        unsigned int offsetx = glGetUniformLocation(shaderLos.ID, "offsetx");
+        glUniform1f(offsetx, persona.getOffsetX());
+        unsigned int offsety = glGetUniformLocation(shaderLos.ID, "offsety");
+        glUniform1f(offsety, persona.getOffsetY());
 
-        //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        //glDrawArrays(GL_TRIANGLES, 0, 6); // OK -- Funciona !
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 
         // Troca de buffers e checagem/chamada de eventos:

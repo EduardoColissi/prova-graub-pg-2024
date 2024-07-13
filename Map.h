@@ -20,15 +20,36 @@ tilesetIso.png 7 57 114
 4 1 4
 4 4 1
 */
+//#include <iostream>
 
-#include "Quad.h"
+#ifndef MAP_H
+#define MAP_H
+
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
+#include "Shader.h"
+#include "Losango.h"
+
+
+
+//#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h" // github.com/nothings/stb/blob/master/stb_image.h
+
+using namespace std;
 
 class Map {
     private:
-        Config* config;
+        Log* log;
+        //Config* config;
 
         vector<Tile> vecTiles; // Vetor dos tipos de Tiles existentes
-        vector<vector<Quad>> vecQuads; // Vetor de vetor de objetos Quad (cada objeto Quad tem um objeto Tile)
+        vector<vector<Losango>> vecLosangos; // Vetor de vetor de objetos Losango (cada objeto Losango tem um objeto Tile)
+
+        Shader* shaderTile;
+        unsigned int VAO;
+        unsigned int texture;
 
         void init();
         void criaArrayDosTilesExistentes(); // Cria um array de tiles baseado no arquivo "tile_todos.png"
@@ -38,15 +59,18 @@ class Map {
         Map(string mapa);
 
         vector<Tile> getVecTiles();
-        vector<vector<Quad>> getVecQuads();
+        vector<vector<Losango>> getVecLosangos();
 
         void carregarMapa(string arquivo); // Carrega um mapa de um arquivo de configuração
-        void MostraMapaNaTela();
-        void AtualizarMapaParaMainLoop();
 
-
-
+        /*void constroiShaderTile();
+        void constroiVAOTile();
+        void carregaTexturaTile(); // Retorna o int da textura no atributo 'texture'
+        void inicializaMapa();
+        void atualizaMapaNaTela();*/
 
         ~Map();
 
 };
+
+#endif
